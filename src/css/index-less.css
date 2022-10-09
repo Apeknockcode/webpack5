@@ -1,0 +1,7 @@
+.box2 {
+  width: 100px;
+  height: 100px;
+  background: navy;
+  background: url("../image/1.jpeg");
+  background-size: cover ;
+}

@@ -1,0 +1,14 @@
+.box {
+  width: 100px;
+  height: 100px;
+  background: red;
+  background: url("../image/3.jpeg");
+  background-size:cover ;
+}
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
