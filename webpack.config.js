@@ -1,6 +1,6 @@
 const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin');
-
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 module.exports = {
     // 入口文件
     entry: "./src/index.js",
@@ -109,8 +109,18 @@ module.exports = {
                 context: path.resolve(__dirname, "src")
 
             }
-        )
+        ),
+        new HtmlWebpackPlugin({
+            title:'My app',
+            template:path.resolve(__dirname,"public/index.html")
+        })
     ],
+    // 配置 devServer
+    devServer:{
+      host:'localhost',//启动服务的主机地址
+      port:"8000",// 启动服务的端口号，
+      open:true,
+    },
     // 模式
     mode: 'development',
 }
