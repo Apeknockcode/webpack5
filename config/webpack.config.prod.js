@@ -2,6 +2,27 @@ const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+
+// 封装 loader 加载球
+function getLoaderStyle(pre) {
+    return [
+        // 执行顺序： 1.从右向左执行 , 2. 从下向上执行
+        MiniCssExtractPlugin.loader, // 讲 js 中 css 通过创建 style 标签添加到Html文件中生效
+        "css-loader",// 将 css 资源 编译成 commonjs 的模块到js 中
+        {
+            loader: "postcss-loader",
+            options: {
+                postcssOptions: {
+                    plugins: [
+                        "postcss-preset-env",// 能解决大多数样式兼容问题
+                    ],
+                    execute: true,
+                }
+            }
+        },
+        pre
+    ].filter(Boolean)
+}
 module.exports = {
     // 入口文件
     entry: "./src/index.js",
@@ -21,39 +42,22 @@ module.exports = {
             // loader 的配置
             {
                 test: /\.css$/, // 检测以 .css为结尾的文件
-                use: [
-                    // 执行顺序： 1.从右向左执行 , 2. 从下向上执行
-                    MiniCssExtractPlugin.loader, // 讲 js 中 css 通过创建 style 标签添加到Html文件中生效
-                    "css-loader"// 将 css 资源 编译成 commonjs 的模块到js 中
-                ]
+                use: getLoaderStyle()
             },
             // 处理less样式资源
             {
                 test: /\.less$/, // 检测以 .less 为结尾的文件
-                use: [
-                    // 执行顺序： 1.从右向左执行 , 2. 从下向上执行
-                    MiniCssExtractPlugin.loader, // 讲 js 中 css 通过创建 style 标签添加到Html文件中生效
-                    "css-loader",// 将 css 资源 编译成 commonjs 的模块到js 中
-                    "less-loader"// 将 less 资源 编译成 commonjs 的模块到js 中
-                ]
+                use: getLoaderStyle("less-loader")
+
             },
             // 处理sass样式资源
             {
                 test: /\.s[ac]ss$/, // 检测以 .less 为结尾的文件
-                use: [
-                    // 执行顺序： 1.从右向左执行 , 2. 从下向上执行
-                    MiniCssExtractPlugin.loader, // 讲 js 中 css 通过创建 style 标签添加到Html文件中生效
-                    "css-loader",// 将 css 资源 编译成 commonjs 的模块到js 中
-                    "sass-loader"// 将 sass 资源 编译成 commonjs 的模块到js 中
-                ]
+                use: getLoaderStyle("sass-loader")
             },
             {
                 test: /\.styl$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    "stylus-loader"
-                ],
+                use: getLoaderStyle("stylus-loader")
             },
             // 处理资源
             {
@@ -112,19 +116,19 @@ module.exports = {
             }
         ),
         new HtmlWebpackPlugin({
-            title:'My app',
-            template:path.resolve(__dirname,"../public/index.html")
+            title: 'My app',
+            template: path.resolve(__dirname, "../public/index.html")
         }),
         new MiniCssExtractPlugin({
             //  设置打包文件的目标地址
-            filename:'static/css/main.css'
+            filename: 'static/css/main.css'
         })
     ],
     // 配置 devServer
-    devServer:{
-      host:'localhost',//启动服务的主机地址
-      port:"8000",// 启动服务的端口号，
-      open:true,
+    devServer: {
+        host: 'localhost',//启动服务的主机地址
+        port: "8000",// 启动服务的端口号，
+        open: true,
     },
     // 模式
     mode: 'development',
