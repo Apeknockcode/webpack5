@@ -2,7 +2,7 @@ const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-
+const cssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin")
 // 封装 loader 加载球
 function getLoaderStyle(pre) {
     return [
@@ -122,14 +122,15 @@ module.exports = {
         new MiniCssExtractPlugin({
             //  设置打包文件的目标地址
             filename: 'static/css/main.css'
-        })
+        }),
+        new cssMinimizerWebpackPlugin()
     ],
     // 配置 devServer
-    devServer: {
-        host: 'localhost',//启动服务的主机地址
-        port: "8000",// 启动服务的端口号，
-        open: true,
-    },
+    // devServer: {
+    //     host: 'localhost',//启动服务的主机地址
+    //     port: "8000",// 启动服务的端口号，
+    //     open: true,
+    // },
     // 模式
-    mode: 'development',
+    mode: 'production',
 }
