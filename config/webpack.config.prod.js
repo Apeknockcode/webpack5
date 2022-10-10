@@ -7,7 +7,7 @@ module.exports = {
     // 输出文件
     output: {
         // __dirname 代表当前文件的文件夹目录
-        path: path.resolve(__dirname, 'dist'),// 输出路径，使用绝对路径
+        path: path.resolve(__dirname, '../dist'),// 输出路径，使用绝对路径
         // 入口文件打包输出文件名
         filename: 'js/index.js',// 输出文件名
         // 自动清空上次打包内容
@@ -106,13 +106,13 @@ module.exports = {
         new ESLintPlugin(
             //检测哪些文件
             {
-                context: path.resolve(__dirname, "src")
+                context: path.resolve(__dirname, "../src")
 
             }
         ),
         new HtmlWebpackPlugin({
             title:'My app',
-            template:path.resolve(__dirname,"public/index.html")
+            template:path.resolve(__dirname,"../public/index.html")
         })
     ],
     // 配置 devServer
