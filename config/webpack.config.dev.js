@@ -120,6 +120,7 @@ module.exports = {
       host:'localhost',//启动服务的主机地址
       port:"8000",// 启动服务的端口号，
       open:true,
+      hot:true,//开启hotModuleReplacement模块 （热模块替换）
     },
     // 模式
     mode: 'development',
