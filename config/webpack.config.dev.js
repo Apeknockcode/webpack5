@@ -91,9 +91,14 @@ module.exports = {
                     },
                     {
                         test: /\.m?js$/,
-                        // exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
-                        include:path.resolve(__dirname,"../src"),
+                        exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
+                        // include: path.resolve(__dirname, "../src"),
                         loader: 'babel-loader',
+                        options: {
+                            cacheDirectory: true,// 开启 babel 缓存，
+                            cacheCompression: false,//  关闭缓存压缩
+                        }
+
                         // use: {
                         //     loader: 'babel-loader',
                         //     options: {
@@ -113,7 +118,10 @@ module.exports = {
             //检测哪些文件
             {
                 context: path.resolve(__dirname, "../src"),
-                include:path.resolve(__dirname,"../src")
+                exclude:'node-module', 
+                cache: true,//开启缓存
+                // 指定缓存的路径
+                cacheLocation:path.resolve(__dirname,"../node_modules/.cache/eslintCache")
 
             }
         ),
