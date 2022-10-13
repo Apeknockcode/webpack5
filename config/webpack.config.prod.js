@@ -96,7 +96,9 @@ module.exports = {
                     },
                     {
                         test: /\.m?js$/,
-                        exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
+                        // exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
+                        // exclude:"node-module", // 排除 node-module 文件夹，
+                        include:path.resolve(__dirname,"../src"),// 只处理 src 下的文件
                         loader: 'babel-loader',
                         // use: {
                         //     loader: 'babel-loader',
@@ -116,7 +118,8 @@ module.exports = {
         new ESLintPlugin(
             //检测哪些文件
             {
-                context: path.resolve(__dirname, "../src")
+                context: path.resolve(__dirname, "../src"),
+                include:path.resolve(__dirname,"../src")
 
             }
         ),
