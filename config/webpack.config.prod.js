@@ -2,7 +2,11 @@ const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const cssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
+const TerserWebpackPlugin = require("terser-webpack-plugin")
+const os = require("os")
+const threads= os.cpus().length
+console.log("cpu",threads)
 // 封装 loader 加载球
 function getLoaderStyle(pre) {
     return [
@@ -99,11 +103,21 @@ module.exports = {
                         // exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
                         // exclude:"node-module", // 排除 node-module 文件夹，
                         include:path.resolve(__dirname,"../src"),// 只处理 src 下的文件
-                        loader: 'babel-loader',
-                        options: {
-                            cacheDirectory: true,// 开启 babel 缓存，
-                            cacheCompression: false,//  关闭缓存压缩
-                        }
+                        use: [
+                            {
+                                loader: "thread-loader",  // 开启进程
+                                options: {
+                                    works: threads,// 进程数量
+                                }
+                            },
+                            {
+                                loader: 'babel-loader',
+                                options: {
+                                    cacheDirectory: true,// 开启 Babel 缓存
+                                    cacheCompression: false,// 关闭缓存的压缩
+                                },
+                            }
+                        ]
                         // use: {
                         //     loader: 'babel-loader',
                         //     options: {
@@ -138,8 +152,18 @@ module.exports = {
             //  设置打包文件的目标地址
             filename: 'static/css/main.css'
         }),
-        new cssMinimizerWebpackPlugin()
+        // new cssMinimizerWebpackPlugin()
     ],
+    optimization: {
+        minimizer: [
+            // 压缩css
+            new CssMinimizerPlugin(),
+            // 压缩js
+            new TerserWebpackPlugin({
+                parallel: threads//开启进程 和 设置进程数量
+            })
+        ]
+    },
     // 配置 devServer
     // devServer: {
     //     host: 'localhost',//启动服务的主机地址
