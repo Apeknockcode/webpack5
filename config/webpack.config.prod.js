@@ -39,70 +39,75 @@ module.exports = {
     // 加载器
     module: {
         rules: [
-            // loader 的配置
             {
-                test: /\.css$/, // 检测以 .css为结尾的文件
-                use: getLoaderStyle()
-            },
-            // 处理less样式资源
-            {
-                test: /\.less$/, // 检测以 .less 为结尾的文件
-                use: getLoaderStyle("less-loader")
+                oneOf: [
+                    // loader 的配置
+                    {
+                        test: /\.css$/, // 检测以 .css为结尾的文件
+                        use: getLoaderStyle()
+                    },
+                    // 处理less样式资源
+                    {
+                        test: /\.less$/, // 检测以 .less 为结尾的文件
+                        use: getLoaderStyle("less-loader")
 
-            },
-            // 处理sass样式资源
-            {
-                test: /\.s[ac]ss$/, // 检测以 .less 为结尾的文件
-                use: getLoaderStyle("sass-loader")
-            },
-            {
-                test: /\.styl$/,
-                use: getLoaderStyle("stylus-loader")
-            },
-            // 处理资源
-            {
-                test: /\.(png|jpe?g|gif|webp|svg)$/,
-                type: "asset",
-                parser: {
-                    dataUrlCondition: {
-                        // 小于10Kb 的图片转base64
-                        // 优点：减少请求书，缺点：体积会变大
-                        maxSize: 20 * 1024 // 20kb
+                    },
+                    // 处理sass样式资源
+                    {
+                        test: /\.s[ac]ss$/, // 检测以 .less 为结尾的文件
+                        use: getLoaderStyle("sass-loader")
+                    },
+                    {
+                        test: /\.styl$/,
+                        use: getLoaderStyle("stylus-loader")
+                    },
+                    // 处理资源
+                    {
+                        test: /\.(png|jpe?g|gif|webp|svg)$/,
+                        type: "asset",
+                        parser: {
+                            dataUrlCondition: {
+                                // 小于10Kb 的图片转base64
+                                // 优点：减少请求书，缺点：体积会变大
+                                maxSize: 20 * 1024 // 20kb
+                            }
+                        },
+                        generator: {
+                            // 输出图片的名称
+                            filename: 'static/image/[hash:10][ext][query]'
+                        }
+                    },
+                    // 处理字体资源
+                    {
+                        test: /\.(ttf|woff2?)$/,
+                        type: "asset/resource",
+                        generator: {
+                            // 输出图片的名称
+                            filename: 'static/font/[hash:10][ext][query]'
+                        }
+                    },
+                    // 处理媒体资源
+                    {
+                        test: /\.(mp3|mp4|wav)$/,
+                        type: 'asset/resource',
+                        generator: {
+                            filename: "static/media/[hash:10][ext][query]"
+                        }
+                    },
+                    {
+                        test: /\.m?js$/,
+                        exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
+                        loader: 'babel-loader',
+                        // use: {
+                        //     loader: 'babel-loader',
+                        //     options: {
+                        //         presets: ['@babel/preset-env']
+                        //     }
+                        // }
                     }
-                },
-                generator: {
-                    // 输出图片的名称
-                    filename: 'static/image/[hash:10][ext][query]'
-                }
-            },
-            // 处理字体资源
-            {
-                test: /\.(ttf|woff2?)$/,
-                type: "asset/resource",
-                generator: {
-                    // 输出图片的名称
-                    filename: 'static/font/[hash:10][ext][query]'
-                }
-            },
-            // 处理媒体资源
-            {
-                test: /\.(mp3|mp4|wav)$/,
-                type: 'asset/resource',
-                generator: {
-                    filename: "static/media/[hash:10][ext][query]"
-                }
-            },
-            {
-                test: /\.m?js$/,
-                exclude: /(node_modules|bower_components)/,  // 排除node_modules （这些文件不处理）
-                loader: 'babel-loader',
-                // use: {
-                //     loader: 'babel-loader',
-                //     options: {
-                //         presets: ['@babel/preset-env']
-                //     }
-                // }
+                ]
             }
+
         ]
     },
     // 插件
@@ -133,5 +138,5 @@ module.exports = {
     // },
     // 模式
     mode: 'production',
-    devtool:"source-map"
+    devtool: "source-map"
 }
