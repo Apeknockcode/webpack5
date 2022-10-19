@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserWebpackPlugin = require("terser-webpack-plugin")
+const ImageMinimizerPlugin= require('image-minimizer-webpack-plugin')
 const os = require("os")
 const threads= os.cpus().length
 console.log("cpu",threads)
@@ -116,6 +117,7 @@ module.exports = {
                                     cacheDirectory: true,// 开启 Babel 缓存
                                     cacheCompression: false,// 关闭缓存的压缩
                                 },
+                                plugins:['@babel/plugin-transform-runtime']
                             }
                         ]
                         // use: {
@@ -161,7 +163,46 @@ module.exports = {
             // 压缩js
             new TerserWebpackPlugin({
                 parallel: threads//开启进程 和 设置进程数量
-            })
+            }),
+            new ImageMinimizerPlugin({
+                minimizer: {
+                    implementation: ImageMinimizerPlugin.imageminGenerate,
+                    // Lossless optimization with custom option
+                    // Feel free to experiment with options for better result for you
+                    options: {
+                        plugins: [
+                            ["gifsicle", { interlaced: true }],
+                            ["jpegtran", { progressive: true }],
+                            ["optipng", { optimizationLevel: 5 }],
+                            // Svgo configuration here https://github.com/svg/svgo#configuration
+                            [
+                                "svgo",
+                                {
+                                    plugins:
+                                        ["preset-default", "prefixIds", {
+                                            name: 'sortAttrs',
+                                            params: {
+                                                xmlnsOrder: "alphabetical"
+                                            }
+                                        }]
+                                    // extendDefaultPlugins([
+                                    //   {
+                                    //     name: "removeViewBox",
+                                    //     active: false,
+                                    //   },
+                                    //   {
+                                    //     name: "addAttributesToSVGElement",
+                                    //     params: {
+                                    //       attributes: [{ xmlns: "http://www.w3.org/2000/svg" }],
+                                    //     },
+                                    //   },
+                                    // ]),
+                                },
+                            ],
+                        ],
+                    }
+                },
+            }),
         ]
     },
     // 配置 devServer
